@@ -1,0 +1,67 @@
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint";
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  { files: ["**/*.{js,mjs,cjs,ts}"] },
+  { languageOptions: { globals: globals.browser } },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    parser: "@typescript-eslint/parser",
+    plugins: ["prettier", "import", "@typescript-eslint"],
+    extends: [
+      "prettier",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended",
+      "airbnb-base"
+    ],
+    parserOptions: {
+      ecmaVersion: 2020,
+      sourceType: "module",
+      project: "./tsconfig.json"
+    },
+    env: {
+      es6: true,
+      browser: true,
+      node: true
+    },
+    rules: {
+      "no-debugger": "off",
+      "object-curly-newline": "off",
+      "no-console": 0,
+      "no-shadow": "off",
+      "class-methods-use-this": "off",
+      "@typescript-eslint/no-explicit-any": 2,
+      "import/extensions": "off",
+      "import/no-unresolved": "off",
+      "import/prefer-default-export": "off",
+      "import/no-extraneous-dependencies": "off",
+      "arrow-body-style": "off",
+      "indent": "off",
+      "comma-dangle": "off",
+      "no-unused-vars": 0,
+      "prettier/prettier": [
+        "error",
+        {
+          "trailingComma": "es5",
+          "tabWidth": 4,
+          "semi": true,
+          "singleQuote": true,
+          "printWidth": 100,
+          "endOfLine": "lf"
+        }
+      ],
+      "operator-linebreak": [
+        "error",
+        "after",
+        {
+          "overrides": {
+            ":": "before"
+          }
+        }
+      ]
+    }
+  }
+];
