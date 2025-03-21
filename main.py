@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from schemas import RegUser
 from database import get_db
+from models import AnimalType
+from schemas import RegUser
 from crud import *
 
 
@@ -39,3 +40,9 @@ async def auth(user: AuthUser, db: Session = Depends(get_db)):
 @app.get("/auth/", response_model=GetUser)
 async def status_auth(user: GetUser = Depends(get_current_user)):
     return user
+
+
+@app.get("/animal_type/")
+async def animal_type(db: Session = Depends(get_db)):
+    db_animal = db.query(AnimalType).order_by(AnimalType.id).all()
+    return db_animal
