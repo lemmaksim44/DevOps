@@ -28,17 +28,12 @@ export class Form {
     const container = document.createElement('div');
     container.classList.add('form-group');
 
-    const label = document.createElement('label');
-    label.setAttribute('for', id);
-    label.textContent = labelText;
-
     const input = document.createElement('input');
     input.setAttribute('type', type);
     input.setAttribute('id', id);
     input.setAttribute('name', id);
     input.setAttribute('placeholder', `Введите ${labelText.toLowerCase()}`);
 
-    container.append(label);
     container.append(input);
 
     return container;

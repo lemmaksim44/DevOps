@@ -11,8 +11,12 @@ export class Header {
 
   private createHeader(): HTMLElement {
     const header = document.createElement('header');
-    header.classList.add('header__container');
-    header.textContent = 'Aurum Vet';
+
+    const headerContainer = document.createElement('div');
+    headerContainer.classList.add('header__container');
+    headerContainer.textContent = 'Aurum Vet';
+
+    header.append(headerContainer);
     return header;
   }
 

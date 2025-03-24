@@ -1,7 +1,15 @@
-.header__container {
+header {
   font-family: 'Graduate', sans-serif;
   font-weight: 400;
-  font-size: 50px;
+  font-size: 55px;
   line-height: 100%;
   letter-spacing: 0%;
+  min-width: 490px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  margin: 3rem;
 }
+
+
+

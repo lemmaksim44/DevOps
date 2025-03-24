@@ -2,6 +2,10 @@ import { Header } from "./header/Header";
 import { Form } from "./form/Form";
 import { Img } from "./img/Img";
 
+// @ts-ignore
+import './style.css';
+
+
 export class App {
   private header: Header;
   private form: Form;
@@ -18,14 +22,19 @@ export class App {
   }
 
   private init(): void {
+    const mainContainer = document.createElement('div');
+    mainContainer.classList.add('main-container');
+
     const headerElement = this.header.getHeaderElement();
     this.container.append(headerElement);
 
     const formElement = this.form.getFormElement();
-    this.container.append(formElement);
+    mainContainer.append(formElement);
 
     const imgContainer = this.img.getImageElement();
-    this.container.append(imgContainer);
+    mainContainer.append(imgContainer);
+
+    this.container.append(mainContainer);
   }
 
 }
