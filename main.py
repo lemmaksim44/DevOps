@@ -1,13 +1,23 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
+from typing import List
 
 from database import get_db
-from models import AnimalType
-from schemas import RegUser
+from models import AnimalType, Report
+from schemas import *
 from crud import *
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", response_model=Message)
@@ -51,11 +61,48 @@ async def status_auth(user: GetUser = Depends(get_current_user)):
     headers: {
                 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkb2N0b3IyIiwiZXhwIjoxNzQyNTQ5NzY0fQ.kc9p5G31xdzHrWfaMZQxJlT_rGqQx4_7tHlDOU319o1'
             }
+    
+    Use these headers in the following requests
     """
     return user
 
 
-@app.get("/animal_type/", response_model=AnimalResponse)
-async def animal_type(db: Session = Depends(get_db)):
+@app.get("/animal_type/", response_model=List[AnimalResponse])
+async def animal_type(user: GetUser = Depends(get_current_user), db: Session = Depends(get_db)):
     db_animal = db.query(AnimalType).order_by(AnimalType.id).all()
     return db_animal
+
+
+@app.get("/report/", response_model=List[GetReport])
+async def get_report(user: GetUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    db_report = db.query(
+        Report.id,
+        Report.date,
+        Report.time,
+        Report.owner,
+        AnimalType.animal.label("pet"),
+        Report.pet_name
+        ).join(AnimalType, Report.pet == AnimalType.id).order_by(desc(Report.id)).all()
+    
+    return db_report
+
+
+@app.post("/report/", response_model=CreateReport)
+async def post_report(data: CreateReport, user: GetUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    return create_report(data, db)
+
+
+@app.put("/report/", response_model=PutReport)
+async def put_report(data: PutReport, user: GetUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    return change_report(data, db)
+
+
+@app.delete("/report/", response_model=Message)
+async def delete_report(data: DeleteReport, user: GetUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    db_report = db.query(Report).filter(Report.id == data.id).first()
+    if not db_report:
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    db.delete(db_report)
+    db.commit()
+    return {"message": "The report was successfully deleted"}

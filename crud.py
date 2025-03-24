@@ -7,7 +7,7 @@ import jwt
 from jwt import PyJWTError
 
 from database import get_db
-from models import User
+from models import User, AnimalType, Report
 from schemas import *
 
 
@@ -67,3 +67,62 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
 
     return user
+
+
+def validate_date(date):
+    try:
+        val_date = datetime.strptime(str(date), "%Y-%m-%d").date()
+    except:
+        raise HTTPException(status_code=401, detail="Wrong date format or invalid date")
+    
+    return val_date
+
+
+def validate_time(time):
+    try:
+        val_time = datetime.strptime(str(time), "%H:%M:%S").time()
+    except:
+        raise HTTPException(status_code=401, detail="Wrong time format or invalid time")
+    
+    return val_time
+
+
+def create_report(data: CreateReport, db: Session):
+    val_date = validate_date(data.date)
+    val_time = validate_time(data.time)
+    db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
+
+    new_report = Report (
+        date = val_date,
+        time = val_time,
+        owner = data.owner,
+        pet = db_pet.id,
+        pet_name = data.pet_name
+    )
+
+    db.add(new_report)
+    db.commit()
+    db.refresh(new_report)
+    new_report.pet = data.pet
+    return new_report
+
+
+def change_report(data: PutReport, db: Session):
+    val_date = validate_date(data.date)
+    val_time = validate_time(data.time)
+    db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
+
+    db_report = db.query(Report).filter(Report.id == data.id).first()
+    if not db_report:
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    db_report.date = val_date
+    db_report.time = val_time
+    db_report.owner = data.owner
+    db_report.pet = db_pet.id
+    db_report.pet_name = data.pet_name
+
+    db.commit()
+    db.refresh(db_report)
+    db_report.pet = db_pet.animal
+    return db_report
