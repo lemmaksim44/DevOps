@@ -1,11 +1,13 @@
 // @ts-ignore
 import './Form.css';
+import { FormValidation } from './FormValidation';
 
 export class Form {
   private formContainer: HTMLElement;
 
   constructor() {
     this.formContainer = this.createForm();
+    this.setupValidation();
   }
 
   private createForm(): HTMLElement {
@@ -34,7 +36,10 @@ export class Form {
     input.setAttribute('name', id);
     input.setAttribute('placeholder', `Введите ${labelText.toLowerCase()}`);
 
-    container.append(input);
+    const errorMessage = document.createElement('span');
+    errorMessage.classList.add('error-message');
+
+    container.append(input, errorMessage);
 
     return container;
   }
@@ -48,7 +53,49 @@ export class Form {
     return btnSubmit;
   }
 
+  private setupValidation(): void {
+    const form = this.formContainer;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.clearErrors();
+
+      const loginInput = form.querySelector('#login') as HTMLInputElement;
+      const passwordInput = form.querySelector('#password') as HTMLInputElement;
+
+      const loginValidation = FormValidation.validationLogin(loginInput.value);
+      const passwordValidation = FormValidation.validationPassword(passwordInput.value);
+
+      if (!loginValidation.isValid) {
+        this.showError(loginInput, loginValidation.error!);
+      }
+
+      if (!passwordValidation.isValid) {
+        this.showError(passwordInput, passwordValidation.error!);
+      }
+
+
+      if (loginValidation.isValid && passwordValidation.isValid) {
+        console.log('Form is valid, submitting...');
+      }
+    })
+  }
+
+  private showError(input: HTMLInputElement, message: string): void {
+    const errorElement = input.nextElementSibling as HTMLElement;
+    errorElement.textContent = message;
+    input.classList.add('error');
+  }
+
+  private clearErrors(): void {
+    const errorMessages = this.formContainer.querySelectorAll('.error-message');
+    errorMessages.forEach((el) => el.textContent = '');
+    const errorInputs = this.formContainer.querySelectorAll('.error');
+    errorInputs.forEach((el) => el.classList.remove('error'));
+  }
+
+
   public getFormElement(): HTMLElement {
     return this.formContainer;
   }
+
 }

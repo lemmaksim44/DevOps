@@ -36,3 +36,17 @@
   cursor: pointer;
 }
 
+.error-message {
+  color: rgb(155, 24, 24);
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.error {
+  border-color: rgb(155, 24, 24) !important;
+}
+
+.error-container {
+  margin-top: 15px;
+}
