@@ -1,12 +1,17 @@
 // @ts-ignore
 import './Form.css';
 import { FormValidation } from './FormValidation';
+import { ApiClient } from '../request/Request';
 
 export class Form {
   private formContainer: HTMLElement;
+  private apiClient: ApiClient;
+  private onSubmit: () => void;
 
-  constructor() {
+  constructor(onSubmit: () => void) {
+    this.apiClient = new ApiClient();
     this.formContainer = this.createForm();
+    this.onSubmit = onSubmit;
     this.setupValidation();
   }
 
@@ -55,7 +60,7 @@ export class Form {
 
   private setupValidation(): void {
     const form = this.formContainer;
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       this.clearErrors();
 
@@ -72,11 +77,27 @@ export class Form {
       if (!passwordValidation.isValid) {
         this.showError(passwordInput, passwordValidation.error!);
       }
-
-
       if (loginValidation.isValid && passwordValidation.isValid) {
-        console.log('Form is valid, submitting...');
+        console.log("Form is valid, navigating...");
+        this.onSubmit();
       }
+
+
+      // if (loginValidation.isValid && passwordValidation.isValid) {
+      //   try {
+      //     const response = await this.apiClient.postAuth<{
+      //       success_token: string;
+      //       token_type: string;
+      //   }>({
+      //       username: loginInput.value,
+      //       password: passwordInput.value
+      //   });
+      //   console.log('Form is valid, submitting...');
+      //   localStorage.setItem('authToken', response.success_token);
+      // } catch (error) {
+      //   console.error('Ошибка авторизации:', error);
+      // }
+      // }
     })
   }
 
