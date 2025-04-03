@@ -1,0 +1,17 @@
+.crud-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  min-width: 320px;
+  height: 620px;
+}
+
+.crud-input {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: center;
+
+  width: 280px;
+
+}
