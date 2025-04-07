@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import bcrypt
 import jwt
 from jwt import PyJWTError
+import pytz
 
 from database import get_db
 from models import User, AnimalType, Report
@@ -42,10 +43,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(pytz.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+        expire = datetime.now(pytz.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -65,7 +65,6 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = get_user(username, db)
     if user is None:
         raise credentials_exception
-
     return user
 
 
@@ -74,7 +73,6 @@ def validate_date(date):
         val_date = datetime.strptime(str(date), "%Y-%m-%d").date()
     except:
         raise HTTPException(status_code=401, detail="Wrong date format or invalid date")
-    
     return val_date
 
 
@@ -83,14 +81,15 @@ def validate_time(time):
         val_time = datetime.strptime(str(time), "%H:%M:%S").time()
     except:
         raise HTTPException(status_code=401, detail="Wrong time format or invalid time")
-    
     return val_time
 
 
 def create_report(data: CreateReport, db: Session):
     val_date = validate_date(data.date)
     val_time = validate_time(data.time)
+    if len(data.owner) == 0: raise HTTPException(status_code=401, detail="No owner name")
     db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
+    if len(data.pet_name) == 0: raise HTTPException(status_code=401, detail="No pet name")
 
     new_report = Report (
         date = val_date,
@@ -110,7 +109,9 @@ def create_report(data: CreateReport, db: Session):
 def change_report(data: PutReport, db: Session):
     val_date = validate_date(data.date)
     val_time = validate_time(data.time)
+    if len(data.owner) == 0: raise HTTPException(status_code=401, detail="No owner name")
     db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
+    if len(data.pet_name) == 0: raise HTTPException(status_code=401, detail="No pet name")
 
     db_report = db.query(Report).filter(Report.id == data.id).first()
     if not db_report:

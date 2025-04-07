@@ -33,7 +33,6 @@ async def register(user: RegUser, db: Session = Depends(get_db)):
 
     if len(user.password) < 6:
         raise HTTPException(status_code=400, detail="Weak password")
-
     return create_user(user, db)
 
 
@@ -83,7 +82,6 @@ async def get_report(user: GetUser = Depends(get_current_user), db: Session = De
         AnimalType.animal.label("pet"),
         Report.pet_name
         ).join(AnimalType, Report.pet == AnimalType.id).order_by(desc(Report.id)).all()
-    
     return db_report
 
 
