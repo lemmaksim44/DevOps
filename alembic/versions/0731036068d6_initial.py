@@ -28,6 +28,19 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_animal_type_animal'), 'animal_type', ['animal'], unique=True)
     op.create_index(op.f('ix_animal_type_id'), 'animal_type', ['id'], unique=False)
+
+    op.execute("""
+    INSERT INTO animal_type (animal) VALUES 
+    ('Собака'),
+    ('Кошка'),
+    ('Хомяк'),
+    ('Крыса'),
+    ('Морская свинка'),
+    ('Кролик'),
+    ('Попугай'),
+    ('Еж')
+    """)
+
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(), nullable=False),
@@ -36,6 +49,12 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
+
+    op.execute("""
+    INSERT INTO users (username, password)
+    VALUES ('doctor', '$2b$12$uo6npZXjSXdil30RTr1FQ.v1IeJzquHxwryqMMZJxAu/MCN.EnZNa')
+    """)
+
     op.create_table('report',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
@@ -49,6 +68,17 @@ def upgrade() -> None:
     op.create_index(op.f('ix_report_date'), 'report', ['date'], unique=False)
     op.create_index(op.f('ix_report_id'), 'report', ['id'], unique=False)
     op.create_index(op.f('ix_report_owner'), 'report', ['owner'], unique=False)
+
+    op.execute("""
+    INSERT INTO report (date, time, owner, pet, pet_name)
+    VALUES 
+    ('2025-04-01', '10:00:00', 'Чернов Виктор Викторович', 1, 'Рекс'),
+    ('2025-04-01', '11:30:00', 'Фёдоров Константин Олегович', 2, 'Тишка'),
+    ('2025-04-01', '12:15:00', 'Лебедев Александр Юрьевич', 3, 'Хома'),
+    ('2025-04-01', '13:45:00', 'Орлова Татьяна Сергеевна', 8, 'Шипик'),
+    ('2025-04-01', '15:00:00', 'Морозова Екатерина Павловна', 1, 'Буся')
+    """)
+
     # ### end Alembic commands ###
 
 
