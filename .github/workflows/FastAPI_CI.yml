@@ -29,4 +29,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=main --cov=crud --cov-report=term
+          pytest --cov=main --cov=crud --cov-report=term test.py
