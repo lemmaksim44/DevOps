@@ -5,9 +5,9 @@ import { Crud } from '../crud/Crud';
 import { ApiClient } from '../request/Request';
 
 export class PetsContainer {
-  private petsContainer: HTMLElement;
-  private petsCardsContainer: HTMLElement;
-  private pets: PetItem[] = [];
+  protected petsContainer: HTMLElement;
+  protected petsCardsContainer: HTMLElement;
+  protected pets: PetItem[] = [];
   private crud: Crud;
 
   constructor() {

@@ -12,7 +12,7 @@ export class App {
   private header: Header;
   private form: Form;
   private img: Img
-  private router: Router;
+  router: Router;
   private pets: PetsContainer;
 
   constructor(private container: HTMLElement) {
@@ -28,13 +28,13 @@ export class App {
     this.router.renderPage(location.pathname);
   }
 
-  private registerRoutes(): void {
+  registerRoutes(): void {
     this.router.addRouter("/", () => this.renderLoginPage());
     this.router.addRouter("/main", () => this.renderMainPage());
     this.router.addRouter("*", () => this.renderLoginPage());
   }
 
-  private renderLoginPage(): void {
+  public renderLoginPage(): void {
     this.container.innerHTML = "";
     const mainContainer = document.createElement('div');
     mainContainer.classList.add('main-container');
@@ -52,7 +52,7 @@ export class App {
     this.container.append(mainContainer);
   }
 
-  private async renderMainPage(): Promise<void> {
+  public async renderMainPage(): Promise<void> {
     this.container.innerHTML = "";
 
     const mainContainer = document.createElement('div');
