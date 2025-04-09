@@ -1,31 +1,21 @@
 export class Router {
-  private routes: { [key: string]: () => void } = {};
+  private routes: { [key: string]: Function } = {};
 
-  constructor(private container: HTMLElement) {
-    window.addEventListener('popstate', () => {
-      this.renderPage(location.pathname);
-    });
+  constructor(private container: HTMLElement) {}
 
+  addRouter(path: string, callback: Function): void {
+    this.routes[path] = callback;
   }
 
-  public addRouter(path: string, renderFun: () => void): void {
-    this.routes[path] = renderFun;
+  renderPage(path: string): void {
+    const route = this.routes[path] || this.routes['*'];
+    if (route) {
+      route();
+    }
   }
 
-  public navigateTo(path: string): void {
-    history.pushState(null, '', path);
+  navigateTo(path: string): void {
+    window.history.pushState({}, '', path);
     this.renderPage(path);
   }
-
-  public renderPage(path: string): void {
-    this.container.innerHTML = '';
-    const render = this.routes[path];
-
-    if (render) {
-      render();
-    } else {
-      this.container.innerHTML = '<h1>404 - Page Not Found</h1>';
-    }
-
-    }
-  }
+}

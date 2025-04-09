@@ -2,24 +2,25 @@
 import './Form.css';
 import { FormValidation } from './FormValidation';
 import { ApiClient } from '../request/Request';
+import { Router } from '../router/Router';
 
 export class Form {
   private formContainer: HTMLElement;
   private apiClient: ApiClient;
-  private onSubmit: () => void;
+  private router: Router;
 
-  constructor(onSubmit: () => void) {
+  constructor( router: Router) {
     this.apiClient = new ApiClient();
     this.formContainer = this.createForm();
-    this.onSubmit = onSubmit;
     this.setupValidation();
+    this.router = router;
   }
 
   private createForm(): HTMLElement {
     const form = document.createElement('form');
     form.classList.add('form-container');
 
-    const loginField = this.createInputField('login', 'text', 'Login');
+    const loginField = this.createInputField('username', 'text', 'Username');
     form.append(loginField);
 
     const passwordField = this.createInputField('password', 'password', 'Password');
@@ -64,7 +65,7 @@ export class Form {
       e.preventDefault();
       this.clearErrors();
 
-      const loginInput = form.querySelector('#login') as HTMLInputElement;
+      const loginInput = form.querySelector('#username') as HTMLInputElement;
       const passwordInput = form.querySelector('#password') as HTMLInputElement;
 
       const loginValidation = FormValidation.validationLogin(loginInput.value);
@@ -77,27 +78,27 @@ export class Form {
       if (!passwordValidation.isValid) {
         this.showError(passwordInput, passwordValidation.error!);
       }
+
       if (loginValidation.isValid && passwordValidation.isValid) {
-        console.log("Form is valid, navigating...");
-        this.onSubmit();
+        try {
+          console.log('Auth payload:', {
+            username: loginInput.value,
+            password: passwordInput.value
+          });
+          const response = await this.apiClient.postAuth<{
+            access_token: string;
+            token_type: string;
+        }>({
+            username: loginInput.value,
+            password: passwordInput.value
+        });
+        localStorage.setItem('authToken', response.access_token);
+        this.apiClient.setToken(response.  access_token);
+        this.router.navigateTo('/main')
+      } catch (error) {
+        console.error('Ошибка авторизации:', error);
       }
-
-
-      // if (loginValidation.isValid && passwordValidation.isValid) {
-      //   try {
-      //     const response = await this.apiClient.postAuth<{
-      //       success_token: string;
-      //       token_type: string;
-      //   }>({
-      //       username: loginInput.value,
-      //       password: passwordInput.value
-      //   });
-      //   console.log('Form is valid, submitting...');
-      //   localStorage.setItem('authToken', response.success_token);
-      // } catch (error) {
-      //   console.error('Ошибка авторизации:', error);
-      // }
-      // }
+      }
     })
   }
 

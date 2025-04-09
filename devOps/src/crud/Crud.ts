@@ -6,8 +6,8 @@ export class Crud {
   crudContainer: HTMLElement;
   private items: CrudItem;
 
-  constructor() {
-    this.items = new CrudItem();
+  constructor(onPetAdded?: () => void) {
+    this.items = new CrudItem(onPetAdded);
     this.crudContainer = this.createCrudContainer();
   }
 
@@ -23,7 +23,7 @@ export class Crud {
   }
 
 
-  public getPetsElement(): HTMLElement {
+  public getCrudElement(): HTMLElement {
     return this.crudContainer;
   }
 }

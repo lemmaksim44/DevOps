@@ -3,7 +3,6 @@ import { Form } from "./form/Form";
 import { Img } from "./img/Img";
 import { Router } from "./router/Router";
 import { PetsContainer } from "./pets/Pets";
-// import { Crud } from "./crud/Crud";
 
 // @ts-ignore
 import './style.css';
@@ -15,18 +14,16 @@ export class App {
   private img: Img
   private router: Router;
   private pets: PetsContainer;
-  // private crud: Crud;
 
   constructor(private container: HTMLElement) {
     this.header = new Header();
-    this.form = new Form(() => this.router.navigateTo("/main"));
     this.router = new Router(this.container);
+    this.form = new Form(this.router);
     this.img = new Img(
       '/./main-dog.png',
       'Logo'
     );
     this.pets = new PetsContainer();
-    // this.crud = new Crud();
     this.registerRoutes();
     this.router.renderPage(location.pathname);
   }
@@ -34,6 +31,7 @@ export class App {
   private registerRoutes(): void {
     this.router.addRouter("/", () => this.renderLoginPage());
     this.router.addRouter("/main", () => this.renderMainPage());
+    this.router.addRouter("*", () => this.renderLoginPage());
   }
 
   private renderLoginPage(): void {
@@ -54,7 +52,7 @@ export class App {
     this.container.append(mainContainer);
   }
 
-  private renderMainPage(): void {
+  private async renderMainPage(): Promise<void> {
     this.container.innerHTML = "";
 
     const mainContainer = document.createElement('div');
@@ -65,22 +63,11 @@ export class App {
     this.container.append(headerElement);
 
     const petsElemnt = this.pets.getPetsElement();
-
-    // const crudContainer = this.crud.getPetsElement();
-    // petsElemnt.append(crudContainer);
     mainContainer.append(petsElemnt);
-    this.container.append(mainContainer)
 
-    this.pets.addPet(
-      "Иван Иванов",
-      "Барсик",
-      "Кот",
-      "03/04/2025",
-      "10:30",
-      "Проведен осмотр, вакцинация.",
-      "/./pencil.png",
-      "./bin.png"
-    );
+
+    await this.pets.loadPets();
+    this.container.append(mainContainer)
 
   }
 
