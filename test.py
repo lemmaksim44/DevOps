@@ -16,6 +16,31 @@ def override_get_db(get_test_db):
 def client():
     return TestClient(app)
 
+
+def test_options_request(client):
+    response = client.options("/", headers={"origin": "https://example.com"})
+    assert response.status_code == 200
+    assert response.headers["Access-Control-Allow-Origin"] == "https://example.com"
+    assert response.headers["Access-Control-Allow-Credentials"] == "true"
+    assert response.headers["Access-Control-Allow-Methods"] == "GET, POST, PUT, DELETE, OPTIONS"
+    assert response.headers["Access-Control-Allow-Headers"] == "Content-Type, Authorization"
+
+def test_get_request_with_origin(client):
+    response = client.get("/", headers={"origin": "https://example.com"})
+    assert response.status_code == 200
+    assert response.json() == {"message": "API for veterinary clinic. Go to /docs or /redoc to find out more"}
+
+    assert response.headers["Access-Control-Allow-Origin"] == "https://example.com"
+    assert response.headers["Vary"] == "Origin"
+
+def test_get_request_without_origin(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "API for veterinary clinic. Go to /docs or /redoc to find out more"}
+
+    assert "Access-Control-Allow-Origin" not in response.headers
+    assert "Vary" not in response.headers
+
 # Root
 def test_root(client):
     response = client.get("/")
