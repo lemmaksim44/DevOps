@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { PetItem } from './PetItem';
-import { ApiClient } from '../../request/Request';
 
 // Создаем моки
 const mockDeletePet = vi.fn().mockResolvedValue(true);

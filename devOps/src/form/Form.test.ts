@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Form } from './Form';
-import { ApiClient } from '../request/Request';
 import { Router } from '../router/Router';
 
 // Мокаем ApiClient и Router
@@ -26,14 +25,12 @@ vi.mock('../router/Router', () => ({
 
 describe('Form', () => {
   let form: Form;
-  let apiClient: ApiClient;
   let router: Router;
   let container: HTMLElement;
 
   beforeEach(() => {
     container = document.createElement('div');
     router = new Router(container);
-    apiClient = new ApiClient();  // Создаем mock экземпляр ApiClient
     form = new Form(router);  // Передаем только router, так как Form ожидает только его
     document.body.append(form.getFormElement());
   });
