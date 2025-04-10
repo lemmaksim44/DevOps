@@ -26,7 +26,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest-cov
+          pip install pipdeptree
+
+      - name: Checking compatibility and correct installation
+        run: |
           pip check
+          
+      - name: Check dependencies with pipdeptree
+        run: |
+          pipdeptree --warn fail
 
   test:
     runs-on: ubuntu-latest
