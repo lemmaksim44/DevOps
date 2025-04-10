@@ -10,7 +10,7 @@ export interface PetUpdateData {
 export class ApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = 'https://2686-80-64-17-104.ngrok-free.app') {
+  constructor(baseUrl: string = 'http://localhost:8000') {
     this.baseUrl = baseUrl;
   }
 
