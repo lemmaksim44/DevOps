@@ -129,10 +129,18 @@ export class PetItem {
     }
   }
 
+  /*
   private exitEditMode() {
     this.petElement.innerHTML = '';
     const petCard = this.createPetElement();
     this.petElement.append(petCard);
+  }
+  */
+
+  private exitEditMode() {
+    const petCard = this.createPetElement();
+    this.petElement.replaceWith(petCard); // Заменяем текущий элемент полностью
+    this.petElement = petCard; // Обновляем ссылку
   }
 
   private updatePetCard(updatedPet: PetUpdateData) {

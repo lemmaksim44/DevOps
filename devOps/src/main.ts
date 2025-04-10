@@ -49,7 +49,11 @@ export class App {
     const imgContainer = this.img.getImageElement();
     mainContainer.append(imgContainer);
 
-    this.container.append(mainContainer);
+    const mainScrollContainer = document.createElement('div');
+    mainScrollContainer.classList.add('main__scroll-container');
+
+    mainScrollContainer.append(headerElement, mainContainer);
+    this.container.append(mainScrollContainer);
   }
 
   public async renderMainPage(): Promise<void> {

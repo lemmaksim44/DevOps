@@ -27,6 +27,7 @@ export class PetsContainer {
   private createCardsContainer(): HTMLElement {
     const container = document.createElement('div');
     container.classList.add('pets__cards-container');
+    container.scrollTop = 1;
     return container;
   }
 
