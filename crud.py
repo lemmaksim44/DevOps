@@ -91,6 +91,9 @@ def create_report(data: CreateReport, db: Session):
     db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
     if len(data.pet_name) == 0: raise HTTPException(status_code=401, detail="No pet name")
 
+    if not db_pet:
+        raise HTTPException(status_code=404, detail="Animal not found")
+
     new_report = Report (
         date = val_date,
         time = val_time,
@@ -112,6 +115,9 @@ def change_report(data: PutReport, db: Session):
     if len(data.owner) == 0: raise HTTPException(status_code=401, detail="No owner name")
     db_pet = db.query(AnimalType).filter(AnimalType.animal == data.pet).first()
     if len(data.pet_name) == 0: raise HTTPException(status_code=401, detail="No pet name")
+
+    if not db_pet:
+        raise HTTPException(status_code=404, detail="Animal not found")
 
     db_report = db.query(Report).filter(Report.id == data.id).first()
     if not db_report:

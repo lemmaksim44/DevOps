@@ -222,6 +222,20 @@ def test_post_report_Pet(client, token):
     assert response.status_code == 422
 
 
+def test_post_report_Pet_2(client, token):
+    headers = {'Authorization': f'Bearer {token}'}
+    json = {
+        "date": "2025-04-01",
+        "time": "10:30:00",
+        "owner": "Новикова Ольга Васильевна",
+        "pet": "Мышь",
+        "pet_name": "Луна"
+    }
+    response = client.post("/report/", headers=headers, json=json)
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Animal not found"}
+
+
 def test_post_report_Pet_name(client, token):
     headers = {'Authorization': f'Bearer {token}'}
     json = {
@@ -336,6 +350,21 @@ def test_put_report__Pet(client, token):
     }
     response = client.put("/report/", headers=headers, json=json)
     assert response.status_code == 422
+
+
+def test_put_report__Pet_2(client, token):
+    headers = {'Authorization': f'Bearer {token}'}
+    json = {
+        "id": 1,
+        "date": "2025-04-02",
+        "time": "10:30:00",
+        "owner": "Новикова Ольга Васильевна",
+        "pet": "Мышь",
+        "pet_name": "Луна"
+    }
+    response = client.put("/report/", headers=headers, json=json)
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Animal not found"}
 
 
 def test_put_report__Pet_name(client, token):
