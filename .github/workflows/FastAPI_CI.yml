@@ -1,0 +1,65 @@
+name: FastAPI CI
+
+on:
+  push:
+    branches: [ "devOps-API-lab-1" ]
+  pull_request:
+    branches: [ "devOps-API-lab-1" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd API
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov
+          pip install pipdeptree
+
+      - name: Checking compatibility and correct installation
+        run: |
+          cd API
+          pip check
+          
+      - name: Check dependencies with pipdeptree
+        run: |
+          cd API
+          pipdeptree --warn fail
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd API
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov
+
+      - name: Run tests
+        run: |
+          cd API
+          pytest --cov=main --cov=crud --cov-report=term test.py
