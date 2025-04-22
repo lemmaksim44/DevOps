@@ -1,0 +1,54 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ "devOps-lab-1" ]
+  pull_request:
+    branches: [ "devOps-lab-1" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd devOps
+          npm install
+
+      - name: Build project
+        run: |
+          cd devOps
+          npm run build
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd devOps
+          npm install
+
+      - name: Run tests
+        run: |
+          cd devOps
+          npx vitest run --coverage

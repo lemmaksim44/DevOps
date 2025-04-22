@@ -1,0 +1,13 @@
+.pets__container {
+  background-color: #E0E0E0;
+  min-height: 100px;
+  display: flex;
+  flex-direction: row;
+  /*justify-content: space-between;*/
+}
+
+
+.pets__cards-container {
+  height: 90vh; /* или нужную тебе высоту */
+  overflow-y: auto; /* вертикальный скролл */
+}

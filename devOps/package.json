@@ -1,0 +1,24 @@
+{
+  "name": "packate",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@vitest/coverage-v8": "^3.1.1",
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.5.3",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.2.0",
+    "vitest": "^3.1.1"
+  }
+}
