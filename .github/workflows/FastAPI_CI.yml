@@ -23,6 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd API
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest-cov
@@ -30,10 +31,12 @@ jobs:
 
       - name: Checking compatibility and correct installation
         run: |
+          cd API
           pip check
           
       - name: Check dependencies with pipdeptree
         run: |
+          cd API
           pipdeptree --warn fail
 
   test:
@@ -51,10 +54,12 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd API
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest-cov
 
       - name: Run tests
         run: |
+          cd API
           pytest --cov=main --cov=crud --cov-report=term test.py
